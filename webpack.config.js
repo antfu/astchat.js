@@ -24,8 +24,8 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.jade$/,
-        loader: 'jade'
+        test: /\.[jade|pug]$/,
+        loader: 'pug'
       },
       {
         test: /\.less$/,

@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "qbuild": "webpack",
     "node": "node ./src/server/main.js"
   },
   "dependencies": {
@@ -22,10 +21,10 @@
     "cross-env": "^3.0.0",
     "css-loader": "^0.25.0",
     "file-loader": "^0.9.0",
-    "jade": "^1.11.0",
-    "jade-loader": "^0.8.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "pug": "^2.0.0-beta6",
+    "pug-loader": "^2.3.0",
     "url-loader": "^0.5.7",
     "vue-loader": "^9.7.0",
     "webpack": "^2.1.0-beta.25",

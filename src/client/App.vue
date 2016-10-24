@@ -1,11 +1,11 @@
-<template lang="jade">
+<template lang="pug">
 #app
   h1 {{ msg }}
   h2 Webpack!
 </template>
 
 <script>
-var Socket = require('./scripts/websocket')
+import Socket from './scripts/websocket'
 
 export default {
   name: 'app',
@@ -15,13 +15,17 @@ export default {
     }
   }
 }
-var socket = Socket.connect()
-socket.onmessage = (e) => {
+
+var socket = new Socket()
+socket.on('message', e => {
   console.log('Message: ', e.data)
-}
-socket.onopen = () => {
-  socket.send('Hello')
-}
+})
+socket.on('json', obj => {
+  console.log('JSON: ', obj)
+})
+socket.on('open', () => {
+  socket.json({a:1,b:'234'})
+})
 window.socket = socket
 </script>
 
