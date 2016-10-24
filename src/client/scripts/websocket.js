@@ -1,4 +1,4 @@
-class Socket {
+export default class Socket {
   constructor(url) {
     this.url = url || 'ws://' + location.host + location.pathname
     this.socket = new WebSocket(this.url)
@@ -45,5 +45,3 @@ class Socket {
     this.socket.close.apply(code, reason)
   }
 }
-
-export default Socket
