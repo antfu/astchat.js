@@ -3,7 +3,7 @@ export default class Socket {
     this.url = url || 'ws://' + location.host + location.pathname
     this.socket = new WebSocket(this.url)
     this.onfuncs = {}
-    this.socket.onopen = e => { this.call_on('open', e) }
+    this.socket.onopen  = e => { this.call_on('open', e) }
     this.socket.onerror = e => { this.call_on('error', e) }
     this.socket.onclose = e => { this.call_on('close', e) }
     this.socket.onmessage = e => {
@@ -21,6 +21,10 @@ export default class Socket {
     this.onfuncs[type] = this.onfuncs[type] || []
     this.onfuncs[type].push(func)
     return this
+  }
+
+  off(type) {
+    this.onfuncs[type] = []
   }
 
   call_on(type, e) {
