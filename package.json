@@ -1,6 +1,6 @@
 {
-  "name": "first-vue",
-  "description": "A Vue.js project",
+  "name": "Astchat.js",
+  "description": "An incognito chatting framework",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "private": true,
   "scripts": {
