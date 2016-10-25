@@ -4,8 +4,8 @@
     #messages_pool
       div(v-for="m in messages")
         p.msg.title(v-if="!hide_date")
-          span.msg.datetime(v-if="m.time") {{datetime(m.time)}}
-          span.msg.user(v-if="m.user") {{m.user}}
+          span.msg.datetime(v-if="m.__time") {{datetime(m.__time)}}
+          span.msg.user(v-if="m.__user") {{m.__user}}
         p.msg.content(v-html="emoji(m.msg)")
   #send_input_div
     .link(v-html="emoji('🙂')")
@@ -16,7 +16,8 @@
 
 <script>
 import Socket from './scripts/websocket'
-import Emoji from 'emojione/lib/js/emojione'
+import UtilsMixin from './scripts/utils'
+import Actions from './scripts/actions'
 
 export default {
   name: 'app',
@@ -25,50 +26,35 @@ export default {
       messages: [],
       hide_date: false,
       user: null,
-      inputs: ''
+      inputs: '',
+      opened: false
     }
   },
+  mixins: [{methods: UtilsMixin}],
   methods: {
-    emoji(t) {return Emoji.toImage(t)},
-    send(msg) {
+    send(msg, action) {
+      action = action || 'chat'
       if (!msg) {
         msg = this.inputs + ''
         this.inputs = ''
       }
       if (!msg) return
-      this.socket.json({
-        msg: msg,
-        time: new Date().getTime(),
-        user: this.user,
-        opened: false
-      })
-    },
-    datetime(time) {
-      var a = new Date(time);
-      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var year = a.getFullYear();
-      var month = months[a.getMonth()];
-      var date = a.getDate();
-      var hour = this.pad(a.getHours(),2);
-      var min = this.pad(a.getMinutes(),2);
-      var sec = this.pad(a.getSeconds(),2);
-      var time = hour + ':' + min + ':' + sec + ', ' + date + ' ' + month;
-      return time;
-    },
-    pad(num, size) {
-      var s = num+"";
-      while (s.length < size) s = "0" + s;
-      return s;
+      this.socket.json(this.actions.make({msg: msg}, action))
     }
   },
   created() {
     console.log('Vue instance: ', window.vm = this)
-    let socket = this.socket = window.socket = new Socket()
+    let socket = this.socket = new Socket()
+    let actions = this.actions = new Actions({
+      chat: obj => {
+        console.log('Message: ', obj)
+        this.messages.push(obj)
+      }
+    })
 
-    socket.on('json', obj => {
-      console.log('Message: ', obj)
-      this.messages.push(obj)
-    }).on('open', () => {
+    socket
+    .on('json', obj => actions.onmessage(obj))
+    .on('open', () => {
       this.opened = true
     })
   }

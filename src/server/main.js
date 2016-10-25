@@ -31,6 +31,7 @@ wss.on('connection', function (ws) {
 
   console.log((new Date()) + ' Connection from ' + ' accepted. At ' + location.path)
   ws.on('message', function (message, flags) {
+    console.log(message)
     for (var c of rooms[name])
       c.send(message)
   });
@@ -40,8 +41,15 @@ wss.on('connection', function (ws) {
       rooms[name].splice(index, 1);
     console.log((new Date()) + ' Peer ' + ws.remoteAddress + ' disconnected.')
   });
-  ws.msg = msg => {
-    ws.send(JSON.stringify({time: new Date().getTime(), user: '@Astchat', msg: msg}))
+
+  ws.msg = (msg, action) => {
+    action = action || 'chat'
+    ws.send(JSON.stringify({
+      __user: '@Astchat',
+      __time: new Date().getTime(),
+      __action: action,
+      msg: msg,
+    }))
   }
   ws.msg('Welcome to Astchat! 🎊')
 });
