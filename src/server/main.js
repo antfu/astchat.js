@@ -1,25 +1,43 @@
-var express = require('express')
-var app = express()
-var WebSocketServer = require('ws').Server
+let express = require('express')
+let app = express()
+let url = require('url')
+let WebSocketServer = require('ws').Server
 
-app.use(express.static('public'))
+let rooms = {}
 
-var server = app.listen(8080, function () {
+app.get('/', function (req, res) {
+  res.redirect('/lobby');
+})
+
+app.use('/dist', express.static('public/dist'))
+
+app.get('/:room', function (req, res) {
+  res.sendFile('index.html', {root: './public'})
+})
+
+let server = app.listen(8080, function () {
   console.log('Example app listening on port 8080!')
 });
 
-var wss = new WebSocketServer({
+let wss = new WebSocketServer({
   server: server
 })
 
 wss.on('connection', function (ws) {
-  console.log(ws)
-  console.log((new Date()) + ' Connection from ' + ws.origin + ' accepted. At ' + ws.resource);
+  let location = url.parse(ws.upgradeReq.url, true)
+  let name = location.path
+  rooms[name] = rooms[name] || []
+  rooms[name].push(ws)
+
+  console.log((new Date()) + ' Connection from ' + ' accepted. At ' + location.path)
   ws.on('message', function (message, flags) {
-    console.log('Received Message: ' + message);
-    ws.send(message);
+    for (var c of rooms[name])
+      c.send(message)
   });
   ws.on('close', function (reasonCode, description) {
-    console.log((new Date()) + ' Peer ' + ws.remoteAddress + ' disconnected.');
+    let index = rooms[name].indexOf(ws)
+    if (index != -1)
+      rooms[name].splice(index, 1);
+    console.log((new Date()) + ' Peer ' + ws.remoteAddress + ' disconnected.')
   });
 });

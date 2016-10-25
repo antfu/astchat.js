@@ -12,7 +12,6 @@
     "emojione": "^2.2.6",
     "express": "^4.14.0",
     "vue": "latest",
-    "websocket": "^1.0.23",
     "ws": "^1.1.1"
   },
   "devDependencies": {

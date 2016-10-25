@@ -3,9 +3,9 @@ export default class Socket {
     this.url = url || 'ws://' + location.host + location.pathname
     this.socket = new WebSocket(this.url)
     this.onfuncs = {}
-    this.socket.onopen  = e => { this.call_on('open', e) }
-    this.socket.onerror = e => { this.call_on('error', e) }
-    this.socket.onclose = e => { this.call_on('close', e) }
+    this.socket.onopen  = e => this.call_on('open', e)
+    this.socket.onerror = e => this.call_on('error', e)
+    this.socket.onclose = e => this.call_on('close', e)
     this.socket.onmessage = e => {
       this.call_on('message', e)
       try {
