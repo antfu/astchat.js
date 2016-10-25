@@ -40,4 +40,8 @@ wss.on('connection', function (ws) {
       rooms[name].splice(index, 1);
     console.log((new Date()) + ' Peer ' + ws.remoteAddress + ' disconnected.')
   });
+  ws.msg = msg => {
+    ws.send(JSON.stringify({time: new Date().getTime(), user: '@Astchat', msg: msg}))
+  }
+  ws.msg('Welcome to Astchat! 🎊')
 });
